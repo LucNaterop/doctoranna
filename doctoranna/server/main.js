@@ -71,7 +71,7 @@ function updateOne(){
 
 Meteor.setInterval(function(){
 	updateOne();
-}, 1000);
+}, 3000);
 
 
 
