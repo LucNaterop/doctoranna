@@ -1,0 +1,52 @@
+<html>
+<head>
+  <title>DoctorAnna</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+  <script src="doctoranna.js"></script>
+</head>
+<body>
+<script>
+  
+// assumes "data" array with properties object_id, it's JSON has to be pasted, or loaded
+
+// Utitliy functions for the doctoranna program
+
+function getFacebookReactionsFromId(postId, callback){
+  var accessToken = 'EAACEdEose0cBAIHpsoaLUZBMLIZCA5g4UFMx32djcUZA7YMPO9Wi1diq7m5UjYZAqNNObxp7uvQHnEGYtrDI3ml8eHWkwVYpxs9XQYvOuhArwEWhMFdF6VQcCYe3dZAdZCS0Qm4yEp1jSeW8HWSCJEzJ3tQOVGhhQkIxXEAMzEHcsMZArgC7HaScZAAdqXldVPoZD';
+  var accessTokenString = '?access_token='+accessToken;
+  var queryString = 'https://graph.facebook.com/v2.8/' + postId + '/reactions'+accessTokenString
+  $.get(queryString, function(r){
+    var reactions = r.data;
+    var amounts = {
+      'LIKE': 0,
+      'LOVE': 0,
+      'WOW': 0,
+      'HAHA': 0,
+      'SAD': 0,
+      'ANGRY': 0,
+      'THANKFUL': 0
+    };
+    reactions.forEach(function(reaction){
+      amounts[reaction.type] = amounts[reaction.type] + 1;
+    })
+    callback(amounts);
+  });
+}
+
+var results = []
+data.forEach(function(post){
+  getFacebookReactionsFromId(post.object_id,function(amounts){
+    amounts.id = post.object_id;
+    results.push(amounts)
+    console.log('done')
+  });
+});
+
+setTimeout(function(){
+  console.log(JSON.stringify(results));
+},3000)
+
+
+</script>
+</body>
+</html>
