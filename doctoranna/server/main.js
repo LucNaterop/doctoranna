@@ -29,7 +29,7 @@ function fixtures(){
 }
 
 function transformToIncludeReactions(doc){
-	var accessToken = 'EAACEdEose0cBAFMbvegZBmZB5YyAaEOKEnZCsokFtvVo39Nyt7ZBI816uAIErIfHnsaplZApqAIH271pWZBZAp0Q6DV61jvUTKDG1DWJs39EtFOyqHSFvay5bLGZBMTDS1ZAQKwswDsVCVbZCZCS9WnM8mX1Ydn4JY0caCsnLM1lmYLei4mc1oxh6fKefIVZAIRNEccZD';
+	var accessToken = 'EAACEdEose0cBAD3LctIYGLZCzRx7U7n85Le1wGybg5GObSDijeq3NNcyyt2mTKpCgJZAirhBZBV8E7Nou1lRtDwb4PcEZAqvDAOCu5hCn4X4UpICWp93jeRDgcqzTH7eWXGNBoQ7ZCZAyvpH7jK23DZA8yuLV8Obwh8ThdGEPUT5qZANipVrt2778IHCqNkhKMEZD';
 	var accessTokenString = '?access_token='+accessToken;
 	var queryString = 'https://graph.facebook.com/v2.8/' + doc.postId + '/reactions'+accessTokenString
 	var result = HTTP.get(queryString);
@@ -60,7 +60,7 @@ fixtures();
 function updateOne(){
 	console.log('updating one...');
 	var entry = Entries.findOne({'hasReactions': false});
-	if(!entry){
+	if(!entry){q
 		console.log('all done sir!');
 		return;
 	}
@@ -70,8 +70,8 @@ function updateOne(){
 }
 
 Meteor.setInterval(function(){
-	updateOne();
-}, 3000);
+	// updateOne();
+}, 300);
 
 
 
