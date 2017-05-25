@@ -29,7 +29,7 @@ function fixtures(){
 }
 
 function transformToIncludeReactions(doc){
-	var accessToken = 'EAACEdEose0cBAD3LctIYGLZCzRx7U7n85Le1wGybg5GObSDijeq3NNcyyt2mTKpCgJZAirhBZBV8E7Nou1lRtDwb4PcEZAqvDAOCu5hCn4X4UpICWp93jeRDgcqzTH7eWXGNBoQ7ZCZAyvpH7jK23DZA8yuLV8Obwh8ThdGEPUT5qZANipVrt2778IHCqNkhKMEZD';
+	var accessToken = 'EAAVdtJmUjtoBAHt4CLMgiHnuIFdPL3BTccgwxCZCL70zbVS0rbzhSbjRGfbZBUNZBHTRLpE2ohj27UO6ncmezUb2AJWIZCOK4NoPZCDrPCjZClvAqYbVBZBuptBJqmRC3cDObHcirdJGqZCA7RTKWLVfg2dKugcKGg8ZD';
 	var accessTokenString = '?access_token='+accessToken;
 	var queryString = 'https://graph.facebook.com/v2.8/' + doc.postId + '/reactions'+accessTokenString
 	var result = HTTP.get(queryString);
@@ -57,10 +57,10 @@ function transformToIncludeReactions(doc){
 
 fixtures();
 
-function updateOne(){
+function getReactionsForOneEntry(){
 	console.log('updating one...');
 	var entry = Entries.findOne({'hasReactions': false});
-	if(!entry){q
+	if(!entry){
 		console.log('all done sir!');
 		return;
 	}
@@ -69,10 +69,25 @@ function updateOne(){
 	console.log('done');
 }
 
-Meteor.setInterval(function(){
-	// updateOne();
-}, 300);
+function migrateToIncludeHasText(){
+	console.log('migrating');
+	Entries.find().forEach(e => {
+		Entries.update({'_id': e._id}, {$set: {hasText: false}})
+	})
+	console.log('done');
+}
 
 
+Meteor.startup(function(){
+	console.log('Total entries: ' + Entries.find().count());
+	console.log('Entries with Reactions: '+ Entries.find({'hasReactions': true}).count());
+	console.log('Entries with Text: '+ Entries.find({'haText': true}).count());
+});
 
-
+/*
+ delted: 
+ 	postId: 118231518201711_1301472006544317
+	postId: 29396596956_10154169294496957
+	postId: 177194474660_10154847634874661
+	
+*/
