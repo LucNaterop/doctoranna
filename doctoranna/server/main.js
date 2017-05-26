@@ -28,6 +28,8 @@ function fixtures(){
 	}
 }
 
+fixtures();
+
 function transformToIncludeReactions(doc){
 	var accessToken = 'EAAVdtJmUjtoBAHt4CLMgiHnuIFdPL3BTccgwxCZCL70zbVS0rbzhSbjRGfbZBUNZBHTRLpE2ohj27UO6ncmezUb2AJWIZCOK4NoPZCDrPCjZClvAqYbVBZBuptBJqmRC3cDObHcirdJGqZCA7RTKWLVfg2dKugcKGg8ZD';
 	var accessTokenString = '?access_token='+accessToken;
@@ -55,8 +57,6 @@ function transformToIncludeReactions(doc){
 	return result;
 }
 
-fixtures();
-
 function getReactionsForOneEntry(){
 	console.log('updating one...');
 	var entry = Entries.findOne({'hasReactions': false});
@@ -69,11 +69,38 @@ function getReactionsForOneEntry(){
 	console.log('done');
 }
 
-function migrateToIncludeHasText(){
-	console.log('migrating');
-	Entries.find().forEach(e => {
-		Entries.update({'_id': e._id}, {$set: {hasText: false}})
-	})
+function cleanDoubleEntries(){
+	console.log('cleaning double entries....');
+	var i = 1;
+	Entries.find().fetch().forEach(e => {
+		console.log(i++);
+		var entries = Entries.find({'postId': e.postId}).fetch();
+		if(entries.length == 0){
+			console.log('HEY NOT GOOD');
+		}
+		if(entries.length > 1){
+			console.log('lets punch this guy out, fucking retard');
+			Entries.remove(entries[1]._id);
+		}
+	});
+	console.log('done. ');
+}
+
+function getTextForOneEntry(){
+	console.log('updating one...');
+	var entry = Entries.findOne({'hasText': false});
+	if(!entry){
+		console.log('all done sir!');
+		return;
+	}
+
+	var accessToken = 'EAAVdtJmUjtoBAHt4CLMgiHnuIFdPL3BTccgwxCZCL70zbVS0rbzhSbjRGfbZBUNZBHTRLpE2ohj27UO6ncmezUb2AJWIZCOK4NoPZCDrPCjZClvAqYbVBZBuptBJqmRC3cDObHcirdJGqZCA7RTKWLVfg2dKugcKGg8ZD';
+	var accessTokenString = '?access_token='+accessToken;
+	var queryString = 'https://graph.facebook.com/v2.8/' + entry.postId + accessTokenString
+	var result = HTTP.get(queryString);
+	console.log(result.data);
+	Entries.update({'postId': result.data.id}, {$set: {'text': result.data.message, 'hasText': true}});
+
 	console.log('done');
 }
 
@@ -81,7 +108,8 @@ function migrateToIncludeHasText(){
 Meteor.startup(function(){
 	console.log('Total entries: ' + Entries.find().count());
 	console.log('Entries with Reactions: '+ Entries.find({'hasReactions': true}).count());
-	console.log('Entries with Text: '+ Entries.find({'haText': true}).count());
+	console.log('Entries with Text: '+ Entries.find({'hasText': true}).count());
+
 });
 
 /*
