@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { data } from './data';
+import fs from 'fs';
 
 function transformData(){
 	var transformedData = [];
@@ -104,11 +105,50 @@ function getTextForOneEntry(){
 	console.log('done');
 }
 
+function writeCsvFile(){
+	var entries = Entries.find().fetch();
+	fileString = '';
+	i = 0;
+	entries.forEach(function(entry){
+		i++;
+		if(!entry.text) return
+		console.log(i);
+		// find max reaction 
+		var labels = {
+			"0" : "LIKE",
+			"1" : "LOVE",
+			"2" : "WOW",
+			"3" : "HAHA",
+			"4" : "SAD",
+			"5" : "ANGRY",
+			"6" : "THANKFUL"
+		}
+
+		var maxLabel = 0;
+		if(entry["LOVE"] > entry[labels[maxLabel]]) maxLabel = 1;
+		if(entry["WOW"] > entry[labels[maxLabel]]) maxLabel = 2;
+		if(entry["HAHA"] > entry[labels[maxLabel]]) maxLabel = 3;
+		if(entry["SAD"] > entry[labels[maxLabel]]) maxLabel = 4;
+		if(entry["ANGRY"] > entry[labels[maxLabel]]) maxLabel = 5;
+		if(entry["THANKFUL"] > entry[labels[maxLabel]]) maxLabel = 6;
+
+		fileString += '\n ' + entry.text.replace(/\n/g, '') + ' \t ' + maxLabel;
+	});
+	fs.writeFile('/Users/lucanaterop/Desktop/data.csv', fileString, function(error){
+		if(error){
+			console.log(error)
+		} else {
+			console.log('hey, yeAH!')
+		}
+	});
+}
+
 
 Meteor.startup(function(){
 	console.log('Total entries: ' + Entries.find().count());
 	console.log('Entries with Reactions: '+ Entries.find({'hasReactions': true}).count());
 	console.log('Entries with Text: '+ Entries.find({'hasText': true}).count());
+	 writeCsvFile();
 
 });
 
