@@ -1,5 +1,5 @@
 
-# 
+# My notes
 
 This repo is a modification of the implementation here:
 
@@ -7,6 +7,7 @@ https://github.com/dennybritz/cnn-text-classification-tf
 
 with multi-class support and support for tensorflow 1.0
 
+# Origianl README
 
 **[This code belongs to the "Implementing a CNN for Text Classification in Tensorflow" blog post.](http://www.wildml.com/2015/12/implementing-a-cnn-for-text-classification-in-tensorflow/)**
 
