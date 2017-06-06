@@ -21,3 +21,7 @@ Then run
 python train.py --train_data_path="./data/train.txt"
 python eval.py --checkpoint_dir="./runs/1463968251/checkpoints/" --test_data_path="./data/test.txt"
 ```
+You can also view the results on tensorboard using
+```
+tensorboard --logdir runs/1496762994/
+```
